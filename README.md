@@ -8,6 +8,27 @@ I’m a lazy beginner who just discovered `yt-dlp`, and I wanted to make my YouT
 
 ---
 
+## 📥 Download the All-in-One Script
+
+To get started, **download the main batch file** from this repository:
+
+[easy_yt-dlp_aio.bat](https://github.com/omr-abs/easy_yt-dlp/blob/main/easy_yt-dlp_aio.bat)
+
+This is the all-in-one script you need—simply save it to your computer and run it to launch the tool.```
+
+---
+
+## ⚠️ Security & Antivirus Warning
+
+Microsoft Edge (and some antivirus software) may flag `EASY_YT-DLP_ALL_IN_ONE.bat` as “unrecognized” or “potentially unsafe.” This happens because the script auto-downloads tools and isn’t code-signed. To run it:
+
+1. When you see a SmartScreen warning, click **“More info”** then **“Run anyway.”**
+2. If antivirus quarantines it, add the script’s folder as an exclusion/whitelist in your antivirus settings (or Windows Defender).
+
+If you prefer not to bypass warnings, download `yt-dlp.exe` and FFmpeg manually (see “Manual Setup”), then run only the core `.bat` logic. Always review the script before running.  
+
+---
+
 ## ✨ Features
 
 - ✅ **Auto-detects and downloads** `yt-dlp.exe` and all required `ffmpeg` binaries (`ffmpeg.exe`, `ffplay.exe`, `ffprobe.exe`) if they’re missing  
