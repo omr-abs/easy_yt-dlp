@@ -1,0 +1,148 @@
+@echo off
+setlocal EnableDelayedExpansion
+
+:: === DYNAMIC FFMPEG PATH ===
+set "scriptDir=%~dp0"
+set "ffmpegPath=%scriptDir%ffmpeg_bin"
+set "PATH=%ffmpegPath%;%PATH%"
+
+:: === DEFAULTS ===
+set "defaultOut=C:\Users\omart\Downloads\Video"
+set "cookieFile=youtube_cookies.txt"
+
+:main
+echo =======================================
+echo   YT-DLP Batch Download Helper
+echo =======================================
+echo.
+
+:: === INPUT METHOD ===
+set "yturls="
+set "urlfile="
+:choose_input
+echo How would you like to input the video/playlist URLs?
+echo   1 - Paste URLs manually
+echo   2 - Load from a .txt file (one URL per line)
+set /p inputType=Enter choice (1 or 2): 
+
+if "%inputType%"=="1" (
+    set /p yturls=Paste YouTube URLs separated by space: 
+) else if "%inputType%"=="2" (
+    set /p urlfile=Enter full path to the .txt file: 
+    if not exist "%urlfile%" (
+        echo File not found: %urlfile%
+        goto choose_input
+    )
+    for /f "delims=" %%l in (%urlfile%) do (
+        set "yturls=%%l"
+        goto choose_type
+    )
+) else (
+    echo Invalid input. Try again.
+    goto choose_input
+)
+
+:choose_type
+echo.
+echo Select download type:
+echo   1 - Best Video + Audio
+echo   2 - Audio Only (MP3)
+set /p downloadType=Enter choice (1 or 2): 
+if not "%downloadType%"=="1" if not "%downloadType%"=="2" (
+    echo Invalid input.
+    goto choose_type
+)
+
+if "%downloadType%"=="1" goto show_formats
+if "%downloadType%"=="2" goto choose_output_audio
+
+:show_formats
+echo.
+echo Showing available formats...
+yt-dlp --cookies %cookieFile% -F !yturls!
+
+echo.
+echo Detecting best available format...
+for /f "tokens=*" %%i in ('yt-dlp --cookies %cookieFile% -f "bv*+ba/b" --print "format_id" --no-playlist !yturls!') do set "autoFormat=%%i"
+
+echo Best available format: !autoFormat!
+:confirm_auto
+set /p useAuto=Use this format? (Y/n): 
+set "useAuto=!useAuto: =!"
+if /i "!useAuto!"=="y" goto set_format_auto
+if /i "!useAuto!"=="n" goto manual_format
+if "!useAuto!"=="" goto set_format_auto
+echo Invalid input.
+goto confirm_auto
+
+:set_format_auto
+set "formatCode=!autoFormat!"
+goto choose_output
+
+:manual_format
+set /p formatCode=Enter format code (e.g. 308+251): 
+goto choose_output
+
+:choose_output
+:: === OUTPUT PATH ===
+echo.
+echo Output Directory (default: %defaultOut%)
+set /p outpath=Enter path or press Enter to use default: 
+if "%outpath%"=="" set outpath=%defaultOut%
+if not exist "%outpath%" mkdir "%outpath%"
+
+goto begin_download
+
+:choose_output_audio
+:: === OUTPUT PATH FOR AUDIO ===
+echo.
+echo Output Directory for MP3 (default: %defaultOut%)
+set /p outpath=Enter path or press Enter to use default: 
+if "%outpath%"=="" set outpath=%defaultOut%
+if not exist "%outpath%" mkdir "%outpath%"
+
+goto begin_download
+
+:begin_download
+:: === LOG TO HISTORY ===
+echo. >> download_history.txt
+echo ===== %DATE% %TIME% ===== >> download_history.txt
+if defined yturls (
+    echo !yturls! >> download_history.txt
+) else (
+    echo [From File] %urlfile% >> download_history.txt
+)
+
+:: === PERFORM DOWNLOAD ===
+echo.
+if "%downloadType%"=="2" (
+    echo Downloading audio only as MP3...
+    if "%inputType%"=="1" (
+        yt-dlp --cookies %cookieFile% -f bestaudio -x --audio-format mp3 -o "%outpath%\%%(title)s.%%(ext)s" %yturls%
+    ) else (
+        yt-dlp --cookies %cookieFile% -f bestaudio -x --audio-format mp3 -a "%urlfile%" -o "%outpath%\%%(title)s.%%(ext)s"
+    )
+) else (
+    echo Downloading using format: !formatCode!
+    if "%inputType%"=="1" (
+        yt-dlp --cookies %cookieFile% -f "!formatCode!" --merge-output-format mp4 -o "%outpath%\%%(title)s.%%(ext)s" %yturls%
+    ) else (
+        yt-dlp --cookies %cookieFile% -f "!formatCode!" --merge-output-format mp4 -a "%urlfile%" -o "%outpath%\%%(title)s.%%(ext)s"
+    )
+)
+
+:: === DONE ===
+echo.
+echo Download completed.
+
+:: === CONTINUE? ===
+echo.
+echo Would you like to download another video?
+echo   1 - Yes
+echo   2 - No (exit)
+set /p again=Enter choice (1 or 2): 
+
+if "%again%"=="1" goto main
+echo Goodbye.
+pause
+exit /b
