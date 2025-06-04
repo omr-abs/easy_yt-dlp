@@ -1,89 +1,85 @@
-# easy_yt-dlp
+# EASY_YT-DLP 🎥🎵
 
-## 🎯 About This Project
+## 🚀 About This Project
 
-I’m a lazy person who just stumbled upon yt-dlp — and I didn’t want to type commands every time I wanted to download a song, a playlist, or some random YouTube video.  
+I’m a lazy beginner who just discovered `yt-dlp`, and I wanted to make my YouTube (and beyond) downloads as easy as possible — no terminal typing, no long commands, just a few keypresses.
 
-So, I made this interactive batch tool to make my life easier.
-
-This script is designed for people like me who want to:
-
-- ✅ Paste a YouTube link or playlist and download instantly — no commands needed  
-- ✅ Automatically get the **best available video+audio** (e.g. 1080p60, 4K), or manually pick formats  
-- ✅ Download full playlists or multiple videos at once  
-- ✅ Convert audio to MP3 with one click  
-- ✅ Automatically **merge video and audio** using `ffmpeg` when needed  
-- ✅ Use **cookie-based login** to access private or age-restricted videos  
-- ✅ Choose the **download folder**, with history logging to keep track  
-- ✅ Stay **fully portable** — uses a local `ffmpeg_bin` folder with no system install required  
-
-All this — without needing to remember or type any yt-dlp commands. It's simple, fast, and portable — and you don’t need to install anything system-wide.
-
-Enjoy!
+**EASY_YT-DLP** is a fully interactive batch-based tool that simplifies downloading videos or MP3s with zero setup. It guides you through everything: picking formats, saving to organized folders, and keeping a log of what you downloaded.
 
 ---
 
-## ⚙️ Setup Instructions
+## ✨ Features
 
-Follow these steps to get everything working locally:
-
-### 📦 1. Download `yt-dlp.exe`
-
-- Go to [yt-dlp Releases](https://github.com/yt-dlp/yt-dlp/releases/latest)
-- Download the `yt-dlp.exe` file
-- Place it in the same folder as the `yt-dlp-helper.bat` script
-
----
-
-### 🎞️ 2. Install `ffmpeg` Locally
-
-This script looks for `ffmpeg` in a folder named `ffmpeg_bin` located **next to the batch script**.
-
-#### 🪜 Steps:
-1. Go to the official FFmpeg download page: [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html)
-2. Click “Windows” → download a pre-built zip (e.g. from `gyan.dev` or `BtbN`)
-3. Extract the `bin/` folder from the zip
-4. Rename that `bin` folder to: "ffmpeg_bin"
-5. Place the entire `ffmpeg_bin` folder in the same directory as your `.bat` script
-
----
-
-### 🗂 Folder Structure
-Make sure all these files and folders are in the **same main folder**, like `D:\YouTubeDownloader\`:
-
-- `yt-dlp-helper.bat` ← the script
-- `yt-dlp.exe` ← download this from yt-dlp GitHub
-- `youtube_cookies.txt` ← (optional) exported cookies file
-- `ffmpeg_bin\` ← a folder (renamed from `bin`) that contains:
-  - `ffmpeg.exe`
-  - `ffprobe.exe`
-  - `ffplay.exe` (optional)
+- ✅ **Auto-detects and downloads** `yt-dlp.exe` and all required `ffmpeg` binaries (`ffmpeg.exe`, `ffplay.exe`, `ffprobe.exe`) if they’re missing  
+- ✅ Automatically creates folders:
+ - `EASY_YT-DLP DOWNLOADS/`
+   - `Videos/`
+   - `MP3/`
+- ✅ Paste a YouTube or supported site URL — **clipboard is auto-detected**
+- ✅ Automatically gets the **best available video+audio** or lets you **manually choose formats**
+- ✅ Supports full **playlist downloads** and **multiple videos**
+- ✅ Convert audio to **MP3** with one click
+- ✅ Automatically merges **video + audio** using ffmpeg (only if compatible)
+- ✅ Keeps a `download_history.txt` with:
+- Video title
+- Format
+- Quality
+- Link
+- Date downloaded
+- ✅ Asks after every download if you want to grab another
+- ✅ Supports **cookie-based login** (e.g., for private or age-restricted content)
+- ✅ Portable — **no need to install anything system-wide**
 
 ---
 
-### 🍪 3. (Optional) Use YouTube Cookies for Restricted Videos
+## 📦 Installation & Setup
 
-Some videos (e.g. age-restricted, unlisted, or private) won’t download unless you're logged in.
+You **don’t need to install yt-dlp or ffmpeg manually**.
 
-You can export your YouTube cookies and use them with this script.
+When you run the `.bat` file:
+- If `yt-dlp.exe` is missing, it will download it from [yt-dlp GitHub](https://github.com/yt-dlp/yt-dlp)
+- If `ffmpeg` binaries are missing, it will download the full archive from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/), extract it, and place the necessary EXEs into the `ffmpeg_bin` folder
 
-#### 🪜 Steps:
+### Manual Setup (optional)
+If you'd rather do it manually:
 
-1. Install the browser extension [**Get cookies.txt**](https://chrome.google.com/webstore/detail/get-cookiestxt/lmjnegcaeklhafolokijcfjliaokphfk)
-2. Go to `https://www.youtube.com` and make sure you're logged in
-3. Click the extension icon → “Export” cookies
-4. Save the file as: "youtube_cookies.txt"
-5. Place it in the same folder as the `.bat` script
+1. Download `yt-dlp.exe` from:  
+ https://github.com/yt-dlp/yt-dlp/releases
 
-If this file exists, the script will automatically use it to authenticate your session.
+2. Download the **FFmpeg Essentials ZIP** from:  
+ https://www.gyan.dev/ffmpeg/builds/
+
+3. Extract the 3 needed files into `ffmpeg_bin/`:
+ - `ffmpeg.exe`
+ - `ffplay.exe`
+ - `ffprobe.exe`
 
 ---
 
-✅ That’s it! You can now double-click `yt-dlp-helper.bat` and start downloading videos or audio with ease!
+## 🍪 Cookie Support
+
+To download private, unlisted, or age-restricted videos:
+- Use [Get cookies.txt](https://chrome.google.com/webstore/detail/get-cookiestxt/lcjhednjnlacjipfkejobcmlmglfbmaj?hl=en) extension for your browser
+- Export cookies for YouTube
+- Save the file as `cookies.txt` in the same folder as the script
+
+---
+
+## 🛠 Example Usage
+
+Just double-click the `.bat` file.
+
+- It detects clipboard URL
+- Shows the video title
+- Lets you download best or custom formats
+- Saves in `Videos/` or `MP3/` folders
+- Asks if you want to keep going
 
 ---
 
 ## 🙏 Credits
 
-- **[yt-dlp](https://github.com/yt-dlp/yt-dlp)** — A powerful YouTube video downloader and fork of `youtube-dl`, maintained by an active open-source community.  
-- **[FFmpeg](https://ffmpeg.org/)** — The industry-standard tool for handling audio/video encoding, decoding, transcoding, and merging.
+- 🛠 **[yt-dlp](https://github.com/yt-dlp/yt-dlp)** – Open-source download engine
+- 🎬 **[FFmpeg](https://ffmpeg.org/)** – Used for merging and conversion
+
+---
