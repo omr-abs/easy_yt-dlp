@@ -2,7 +2,7 @@
 
 ## 🚀 About This Project
 
-I’m a lazy beginner who just discovered `yt-dlp`, and I wanted to make my YouTube (and beyond) downloads as easy as possible — no terminal typing, no long commands, just a few keypresses.
+I’m a lazy beginner who just discovered `yt-dlp`, and I wanted to make my YouTube downloads as easy as possible — no terminal typing, no long commands, just a few keypresses.
 
 **EASY_YT-DLP** is a fully interactive batch-based tool that simplifies downloading videos or MP3s with zero setup. It guides you through everything: picking formats, saving to organized folders, and keeping a log of what you downloaded.
 
