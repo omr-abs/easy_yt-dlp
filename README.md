@@ -65,6 +65,20 @@ To download private, unlisted, or age-restricted videos:
 
 ---
 
+### 🗂 Folder Structure (Simple View)
+
+Make sure all these files and folders are in the **same main folder**, like `D:\YouTubeDownloader\`:
+
+- `.bat` ← the script
+- `yt-dlp.exe` ← download this from yt-dlp GitHub
+- `youtube_cookies.txt` ← (optional) exported cookies file
+- `ffmpeg_bin\` ← a folder (renamed from `bin`) that contains:
+  - `ffmpeg.exe`
+  - `ffprobe.exe`
+  - `ffplay.exe` (optional)
+
+---
+
 ## 🛠 Example Usage
 
 Just double-click the `.bat` file.
