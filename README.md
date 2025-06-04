@@ -21,11 +21,11 @@ I’m a lazy beginner who just discovered `yt-dlp`, and I wanted to make my YouT
 - ✅ Convert audio to **MP3** with one click
 - ✅ Automatically merges **video + audio** using ffmpeg (only if compatible)
 - ✅ Keeps a `download_history.txt` with:
-- Video title
-- Format
-- Quality
-- Link
-- Date downloaded
+ - `Video title`
+ - `Format`
+ - `Quality`
+ - `Link`
+ - `Date downloaded`
 - ✅ Asks after every download if you want to grab another
 - ✅ Supports **cookie-based login** (e.g., for private or age-restricted content)
 - ✅ Portable — **no need to install anything system-wide**
