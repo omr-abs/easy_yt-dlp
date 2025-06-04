@@ -13,7 +13,7 @@ echo ================================
 :: === Setup yt-dlp if missing ===
 if not exist "yt-dlp.exe" (
     echo [Setup] yt-dlp.exe not found. Downloading latest release...
-    powershell -Command "Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile 'yt-dlp.exe'"
+    powershell -Command "Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile 'yt-dlp.exe' > $null"
     if not exist "yt-dlp.exe" (
         echo [ERROR] yt-dlp.exe download failed.
         pause
@@ -25,7 +25,7 @@ if not exist "yt-dlp.exe" (
 if not exist "ffmpeg_bin\ffmpeg.exe" (
     echo [Setup] ffmpeg not found. Downloading essentials ZIP...
     if not exist "ffmpeg_download.zip" (
-        powershell -Command "Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile 'ffmpeg_download.zip'"
+        powershell -Command "Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile 'ffmpeg_download.zip' > $null"
     )
     echo [INFO] Extracting ffmpeg...
     powershell -Command "Expand-Archive -Path 'ffmpeg_download.zip' -DestinationPath 'ffmpeg_extracted' -Force"
@@ -54,8 +54,6 @@ echo ================================
 :: --- 1) Clipboard URL Detection / Title Check ---
 for /f "delims=" %%C in ('powershell -noprofile -command "Get-Clipboard"') do set "CLIP=%%C"
 set "URLS=%CLIP%"
-
-:: Try to get title
 for /f "delims=" %%T in ('yt-dlp --get-title "%URLS%" 2^>nul') do set "VIDTITLE=%%T"
 
 if not defined VIDTITLE (
@@ -67,13 +65,21 @@ if not defined VIDTITLE (
     choice /M "Is this the correct video?"
     if errorlevel 2 (
         set /p "URLS=Please paste the correct URL: "
-        :: Attempt to get title again
         for /f "delims=" %%X in ('yt-dlp --get-title "%URLS%" 2^>nul') do set "VIDTITLE=%%X"
     )
 )
 
-:: --- 2) Ensure Download Folders Exist ---
-set "ROOTFOLDER=%USERPROFILE%\Downloads\EASY_YT-DLP DOWNLOADS"
+:: --- 2) Choose Download Base Directory ---
+echo.
+choice /M "Use default download folder (%USERPROFILE%\Downloads\EASY_YT-DLP DOWNLOADS)?"
+if errorlevel 2 (
+    set /p "ROOTFOLDER=Enter full path for download base directory: "
+) else (
+    set "ROOTFOLDER=%USERPROFILE%\Downloads\EASY_YT-DLP DOWNLOADS"
+)
+if not exist "%ROOTFOLDER%" mkdir "%ROOTFOLDER%"
+
+:: Create subfolders
 set "VIDFOLDER=%ROOTFOLDER%\Videos"
 set "MP3FOLDER=%ROOTFOLDER%\MP3"
 if not exist "%VIDFOLDER%" mkdir "%VIDFOLDER%"
@@ -99,10 +105,11 @@ if "%dl_type%"=="" set dl_type=1
 if "%dl_type%"=="2" (
     echo.
     echo Downloading as MP3 with metadata...
-    yt-dlp %COOKIES% --extract-audio --audio-format mp3 --audio-quality 0 ^
-      --embed-thumbnail --add-metadata ^
-      -o "%MP3FOLDER%\%%(title)s.%%(ext)s" %URLS%
-    echo [%date% %time%] "%VIDTITLE%" ^| MP3 ^| %URLS% >> download_history.txt
+    yt-dlp %COOKIES% ^
+        --extract-audio --audio-format mp3 --audio-quality 0 ^
+        --embed-thumbnail --add-metadata ^
+        -o "%MP3FOLDER%\%%(title)s.%%(ext)s" %URLS%
+    echo [%date% %time%] "%VIDTITLE%" ^| MP3 ^| %URLS% >> "%ROOTFOLDER%\download_history.txt"
     goto AFTER_DOWNLOAD
 )
 
@@ -114,10 +121,10 @@ if "%dl_type%"=="3" (
     set /p "VID=Enter VIDEO format code: "
     set /p "AUD=Enter AUDIO format code: "
     echo.
-    echo Downloading with format %%VID%%+%%AUD%% ...
+    echo Downloading with format %VID%+%AUD% ...
     yt-dlp %COOKIES% -f "%VID%+%AUD%" --merge-output-format mp4 ^
-      -o "%VIDFOLDER%\%%(title)s.%%(ext)s" %URLS%
-    echo [%date% %time%] "%VIDTITLE%" ^| Manual %VID%+%AUD% ^| %URLS% >> download_history.txt
+        -o "%VIDFOLDER%\%%(title)s.%%(ext)s" %URLS%
+    echo [%date% %time%] "%VIDTITLE%" ^| Manual %VID%+%AUD% ^| %URLS% >> "%ROOTFOLDER%\download_history.txt"
     goto AFTER_DOWNLOAD
 )
 
@@ -125,8 +132,8 @@ if "%dl_type%"=="3" (
 echo.
 echo Downloading best video+audio (auto merge)...
 yt-dlp %COOKIES% -f "bv*+ba/b" --merge-output-format mp4 ^
-  -o "%VIDFOLDER%\%%(title)s.%%(ext)s" %URLS%
-echo [%date% %time%] "%VIDTITLE%" ^| Auto best ^| %URLS% >> download_history.txt
+    -o "%VIDFOLDER%\%%(title)s.%%(ext)s" %URLS%
+echo [%date% %time%] "%VIDTITLE%" ^| Auto best ^| %URLS% >> "%ROOTFOLDER%\download_history.txt"
 
 :AFTER_DOWNLOAD
 echo.
