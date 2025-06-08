@@ -25,22 +25,21 @@ echo   1 - Paste URLs manually
 echo   2 - Load from a .txt file (one URL per line)
 set /p inputType=Enter choice (1 or 2): 
 
+
 if "%inputType%"=="1" (
-    set /p yturls=Paste YouTube URLs separated by space: 
+    set /p yturls=Paste YouTube URLs separated by space:
 ) else if "%inputType%"=="2" (
-    set /p urlfile=Enter full path to the .txt file: 
+    set /p urlfile=Enter full path to the .txt file:
     if not exist "%urlfile%" (
         echo File not found: %urlfile%
         goto choose_input
-    )
-    for /f "delims=" %%l in (%urlfile%) do (
-        set "yturls=%%l"
-        goto choose_type
     )
 ) else (
     echo Invalid input. Try again.
     goto choose_input
 )
+
+goto choose_type
 
 :choose_type
 echo.
